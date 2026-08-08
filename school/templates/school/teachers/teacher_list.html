@@ -1,0 +1,92 @@
+{% extends 'school/base.html' %}
+{% load static %}
+
+{% block title %}Teachers - Greenwood Academy{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item active">Teachers</li>
+            </ol>
+        </nav>
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="page-title">Our Faculty</h1>
+                <p class="page-subtitle">Managing {{ teachers.paginator.count }} teachers</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="filter-bar mb-4">
+            <form method="GET" class="row g-3 align-items-end">
+                <div class="col-md-6">
+                    <label class="form-label">Search</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" name="search" class="form-control" placeholder="Search by name..." value="{{ request.GET.search }}">
+                    </div>
+                </div>
+                <div class="col-md-2"><button type="submit" class="btn btn-primary w-100">Filter</button></div>
+                <div class="col-md-2"><a href="{% url 'teacher_list' %}" class="btn btn-outline-secondary w-100">Clear</a></div>
+            </form>
+        </div>
+
+        <div class="row g-4">
+            {% for teacher in teachers %}
+            <div class="col-md-6 col-lg-4">
+                <div class="student-card">
+                    <div class="student-card-header">
+                        {% if teacher.profile_photo %}
+                        <img src="{{ teacher.profile_photo.url }}" alt="{{ teacher.full_name }}" class="student-avatar">
+                        {% else %}
+                        <div class="student-avatar-placeholder">{{ teacher.first_name|first }}{{ teacher.last_name|first }}</div>
+                        {% endif %}
+                        <span class="status-badge status-active">{{ teacher.get_department_display }}</span>
+                    </div>
+                    <div class="student-card-body">
+                        <h5 class="student-name">{{ teacher.full_name }}</h5>
+                        <p class="student-id"><i class="bi bi-hash"></i> {{ teacher.teacher_id }}</p>
+                        <p class="student-meta"><i class="bi bi-briefcase"></i> {{ teacher.qualification }}</p>
+                        <p class="student-meta"><i class="bi bi-envelope"></i> {{ teacher.email }}</p>
+                        <p class="student-meta"><i class="bi bi-calendar"></i> Joined {{ teacher.hire_date|date:"M Y" }}</p>
+                    </div>
+                    <div class="student-card-footer">
+                        <a href="{% url 'teacher_detail' teacher.pk %}" class="btn btn-sm btn-primary"><i class="bi bi-eye me-1"></i> View</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="empty-state">
+                    <i class="bi bi-person-workspace"></i>
+                    <h4>No Teachers Found</h4>
+                    <p>{% if request.GET.search %}Try adjusting your search.{% else %}No teachers have been added yet.{% endif %}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if teachers.has_other_pages %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if teachers.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ teachers.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"><i class="bi bi-chevron-left"></i></a></li>
+                {% endif %}
+                {% for num in teachers.paginator.page_range %}
+                <li class="page-item {% if teachers.number == num %}active{% endif %}"><a class="page-link" href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">{{ num }}</a></li>
+                {% endfor %}
+                {% if teachers.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ teachers.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"><i class="bi bi-chevron-right"></i></a></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

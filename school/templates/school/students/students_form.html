@@ -1,0 +1,116 @@
+{% extends 'school/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - Greenwood Academy{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'student_list' %}">Students</a></li>
+                <li class="breadcrumb-item active">{% if student %}Edit{% else %}Add{% endif %}</li>
+            </ol>
+        </nav>
+        <h1 class="page-title">{{ title }}</h1>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="form-card">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <strong>Please fix:</strong>
+                            <ul class="mb-0 mt-2">
+                                {% for field, errors in form.errors.items %}{% for error in errors %}<li><strong>{{ field|title }}:</strong> {{ error }}</li>{% endfor %}{% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                        <div class="text-center mb-4">
+                            <div class="photo-upload-area" id="photoArea">
+                                {% if student and student.profile_photo %}
+                                <img src="{{ student.profile_photo.url }}" alt="Profile" class="photo-preview" id="photoPreview">
+                                {% else %}
+                                <div class="photo-placeholder" id="photoPlaceholder"><i class="bi bi-camera-fill"></i><span>Upload Photo</span></div>
+                                <img src="" alt="" class="photo-preview d-none" id="photoPreview">
+                                {% endif %}
+                            </div>
+                            <input type="file" name="profile_photo" accept="image/*" class="d-none" id="photoInput">
+                            <small class="text-muted">Click to upload. Max 5MB. JPEG, PNG, or WebP.</small>
+                        </div>
+
+                        <div class="form-section">
+                            <h5 class="form-section-title"><i class="bi bi-person me-2"></i>Personal Information</h5>
+                            <div class="row g-3">
+                                <div class="col-md-6"><label class="form-label">First Name *</label>{{ form.first_name }}</div>
+                                <div class="col-md-6"><label class="form-label">Last Name *</label>{{ form.last_name }}</div>
+                                <div class="col-md-6"><label class="form-label">Email *</label>{{ form.email }}</div>
+                                <div class="col-md-6"><label class="form-label">Phone</label>{{ form.phone }}</div>
+                                <div class="col-md-6"><label class="form-label">Date of Birth *</label>{{ form.date_of_birth }}</div>
+                                <div class="col-md-6"><label class="form-label">Gender *</label>{{ form.gender }}</div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h5 class="form-section-title"><i class="bi bi-mortarboard me-2"></i>Academic Information</h5>
+                            <div class="row g-3">
+                                <div class="col-md-6"><label class="form-label">Student ID *</label>{{ form.student_id }}</div>
+                                <div class="col-md-6"><label class="form-label">Status</label>{{ form.status }}</div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h5 class="form-section-title"><i class="bi bi-people me-2"></i>Family Information</h5>
+                            <div class="row g-3">
+                                <div class="col-md-6"><label class="form-label">Parent/Guardian Name</label>{{ form.parent_name }}</div>
+                                <div class="col-md-6"><label class="form-label">Parent/Guardian Phone</label>{{ form.parent_phone }}</div>
+                                <div class="col-12"><label class="form-label">Address</label>{{ form.address }}</div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'student_list' %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Cancel</a>
+                            <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-check-lg me-1"></i> {% if student %}Update{% else %}Add Student{% endif %}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const photoInput = document.getElementById('photoInput');
+    const photoArea = document.getElementById('photoArea');
+    const photoPreview = document.getElementById('photoPreview');
+    const photoPlaceholder = document.getElementById('photoPlaceholder');
+
+    if (photoArea) photoArea.addEventListener('click', () => photoInput.click());
+    if (photoInput) {
+        photoInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                if (file.size > 5*1024*1024) { alert('Max 5MB.'); return; }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    photoPreview.src = e.target.result;
+                    photoPreview.classList.remove('d-none');
+                    if (photoPlaceholder) photoPlaceholder.classList.add('d-none');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

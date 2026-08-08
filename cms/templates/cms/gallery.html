@@ -1,0 +1,148 @@
+{% extends 'school/base.html' %}
+{% load static %}
+
+{% block title %}Gallery - Greenwood Academy{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'home' %}">Home</a>
+                </li>
+                <li class="breadcrumb-item active">Gallery</li>
+            </ol>
+        </nav>
+
+        <h1 class="page-title">School Gallery</h1>
+        <p class="page-subtitle">
+            Explore memorable moments from Greenwood Academy.
+        </p>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+
+        <!-- Category Filter -->
+        <div class="d-flex flex-wrap gap-2 mb-4">
+
+            <a href="{% url 'gallery' %}"
+               class="btn {% if not selected_category %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                All
+            </a>
+
+            {% for category in categories %}
+                <a href="{% url 'gallery' %}?category={{ category.slug }}"
+                   class="btn {% if selected_category == category.slug %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                    {{ category.name }}
+                </a>
+            {% endfor %}
+
+        </div>
+
+        <!-- Gallery -->
+        <div class="row g-4">
+
+            {% for image in images %}
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="card shadow-sm border-0 h-100">
+
+                    {% if image.image %}
+                    <img src="{{ image.image.url }}"
+                         class="card-img-top"
+                         alt="{{ image.title }}"
+                         style="height:250px; object-fit:cover;">
+                    {% endif %}
+
+                    <div class="card-body">
+
+                        <span class="badge bg-primary-subtle text-primary mb-2">
+                            {{ image.category.name }}
+                        </span>
+
+                        <h5>{{ image.title }}</h5>
+
+                        {% if image.caption %}
+                            <p class="text-muted">
+                                {{ image.caption }}
+                            </p>
+                        {% endif %}
+
+                    </div>
+
+                    <div class="card-footer bg-white border-0">
+
+                        <small class="text-muted">
+                            Uploaded:
+                            {{ image.created_at|date:"M d, Y" }}
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% empty %}
+
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    <h5>No Images Found</h5>
+                    <p class="mb-0">
+                        There are no gallery images available.
+                    </p>
+                </div>
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        <!-- Pagination -->
+
+        {% if images.has_other_pages %}
+
+        <nav class="mt-5">
+            <ul class="pagination justify-content-center">
+
+                {% if images.has_previous %}
+                <li class="page-item">
+                    <a class="page-link"
+                       href="?page={{ images.previous_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}">
+                        &laquo;
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for num in images.paginator.page_range %}
+                <li class="page-item {% if images.number == num %}active{% endif %}">
+                    <a class="page-link"
+                       href="?page={{ num }}{% if selected_category %}&category={{ selected_category }}{% endif %}">
+                        {{ num }}
+                    </a>
+                </li>
+                {% endfor %}
+
+                {% if images.has_next %}
+                <li class="page-item">
+                    <a class="page-link"
+                       href="?page={{ images.next_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}">
+                        &raquo;
+                    </a>
+                </li>
+                {% endif %}
+
+            </ul>
+        </nav>
+
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}

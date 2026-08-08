@@ -1,0 +1,202 @@
+{% extends 'school/base.html' %}
+{% load static %}
+
+{% block title %}{{ student.full_name }} - Greenwood Academy{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'student_list' %}">Students</a></li>
+                <li class="breadcrumb-item active">{{ student.full_name }}</li>
+            </ol>
+        </nav>
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-3">
+                {% if student.profile_photo %}
+                <img src="{{ student.profile_photo.url }}" alt="{{ student.full_name }}" class="rounded-circle border border-2 border-light" width="56" height="56" style="object-fit:cover">
+                {% else %}
+                <div class="student-avatar-placeholder" style="width:56px;height:56px;font-size:1.2rem">{{ student.first_name|first }}{{ student.last_name|first }}</div>
+                {% endif %}
+                <div>
+                    <h1 class="page-title mb-0">{{ student.full_name }}</h1>
+                    <p class="page-subtitle">{{ student.student_id }}</p>
+                </div>
+            </div>
+            {% if user.is_superuser or user.profile.role == 'admin' %}
+            <div class="d-flex gap-2">
+                <a href="{% url 'student_update' student.pk %}" class="btn btn-light"><i class="bi bi-pencil me-1"></i> Edit</a>
+                <a href="{% url 'student_delete' student.pk %}" class="btn btn-outline-light"><i class="bi bi-trash me-1"></i> Delete</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary mb-3"><i class="bi bi-person-vcard me-2"></i>Profile</h5>
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-3">
+                                <small class="text-muted d-block">Status</small>
+                                <span class="status-badge status-{{ student.status }}" style="position:static">{{ student.get_status_display }}</span>
+                            </li>
+                            <li class="mb-3">
+                                <small class="text-muted d-block">Email</small>
+                                <span><i class="bi bi-envelope me-2 text-primary"></i>{{ student.email }}</span>
+                            </li>
+                            <li class="mb-3">
+                                <small class="text-muted d-block">Phone</small>
+                                <span><i class="bi bi-telephone me-2 text-primary"></i>{{ student.phone|default:"—" }}</span>
+                            </li>
+                            <li class="mb-3">
+                                <small class="text-muted d-block">Date of Birth</small>
+                                <span><i class="bi bi-calendar me-2 text-primary"></i>{{ student.date_of_birth|date:"M d, Y" }}</span>
+                            </li>
+                            <li class="mb-3">
+                                <small class="text-muted d-block">Gender</small>
+                                <span><i class="bi bi-gender-ambiguous me-2 text-primary"></i>{{ student.get_gender_display }}</span>
+                            </li>
+                            <li class="mb-3">
+                                <small class="text-muted d-block">Enrolled</small>
+                                <span><i class="bi bi-mortarboard me-2 text-primary"></i>{{ student.enrollment_date|date:"M d, Y" }}</span>
+                            </li>
+                            <li>
+                                <small class="text-muted d-block">Parent / Guardian</small>
+                                <span><i class="bi bi-people me-2 text-primary"></i>{{ student.parent_name|default:"—" }}{% if student.parent_phone %} ({{ student.parent_phone }}){% endif %}</span>
+                            </li>
+                        </ul>
+                        {% if student.address %}
+                        <hr>
+                        <small class="text-muted d-block mb-1">Address</small>
+                        <p class="mb-0"><i class="bi bi-geo-alt me-2 text-primary"></i>{{ student.address }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="row g-4">
+                    <div class="col-12">
+                        <div class="card shadow-sm border-0">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="mb-0 text-primary"><i class="bi bi-journal-bookmark me-2"></i>Enrolled Courses</h5>
+                            </div>
+                            <div class="card-body">
+                                {% if courses %}
+                                <div class="table-responsive">
+                                    <table class="table align-middle">
+                                        <thead><tr><th>Code</th><th>Course</th><th>Credits</th></tr></thead>
+                                        <tbody>
+                                            {% for course in courses %}
+                                            <tr>
+                                                <td class="text-primary fw-semibold">{{ course.code }}</td>
+                                                <td><a href="{% url 'course_detail' course.pk %}" class="text-decoration-none">{{ course.name }}</a></td>
+                                                <td>{{ course.credits }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {% else %}
+                                <p class="text-muted mb-0">No courses assigned yet.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="card shadow-sm border-0">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="mb-0 text-primary"><i class="bi bi-trophy me-2"></i>Grades</h5>
+                            </div>
+                            <div class="card-body">
+                                {% if grades %}
+                                <div class="table-responsive">
+                                    <table class="table align-middle">
+                                        <thead><tr><th>Course</th><th>Grade</th><th>Marks</th><th>Remarks</th></tr></thead>
+                                        <tbody>
+                                            {% for grade in grades %}
+                                            <tr>
+                                                <td>{{ grade.course.name }}</td>
+                                                <td><span class="badge {% if grade.grade == 'F' %}bg-danger{% elif grade.grade <= 'C' %}bg-warning text-dark{% else %}bg-success{% endif %}">{{ grade.grade }}</span></td>
+                                                <td>{{ grade.marks|default:"—" }}</td>
+                                                <td>{{ grade.remarks|default:"—"|truncatewords:15 }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {% else %}
+                                <p class="text-muted mb-0">No grades recorded yet.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="card shadow-sm border-0">
+                            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0 text-primary"><i class="bi bi-folder2-open me-2"></i>Documents</h5>
+                            </div>
+                            <div class="card-body">
+                                {% if documents %}
+                                <div class="list-group list-group-flush">
+                                    {% for doc in documents %}
+                                    <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                        <div>
+                                            <span class="badge bg-primary-subtle text-primary me-2">{{ doc.get_document_type_display }}</span>
+                                            <strong>{{ doc.title }}</strong>
+                                            <small class="text-muted d-block">{{ doc.uploaded_at|date:"M d, Y H:i" }}</small>
+                                        </div>
+                                        <a href="{{ doc.file.url }}" class="btn btn-sm btn-outline-primary" target="_blank"><i class="bi bi-download me-1"></i> View</a>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <p class="text-muted mb-0">No documents uploaded.</p>
+                                {% endif %}
+
+                                {% if user.is_superuser or user.profile.role == 'admin' %}
+                                <hr>
+                                <h6 class="text-primary mb-3"><i class="bi bi-upload me-2"></i>Upload Document</h6>
+                                <form method="POST" action="{% url 'student_document_upload' student.pk %}" enctype="multipart/form-data" class="row g-3 align-items-end">
+                                    {% csrf_token %}
+                                    <div class="col-md-4">
+                                        <label class="form-label">Title</label>
+                                        <input type="text" name="title" class="form-control" placeholder="e.g. Birth Certificate" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Type</label>
+                                        <select name="document_type" class="form-select">
+                                            <option value="birth_cert">Birth Certificate</option>
+                                            <option value="transfer">Transfer Certificate</option>
+                                            <option value="marksheet">Marksheet</option>
+                                            <option value="id_proof">ID Proof</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">File</label>
+                                        <input type="file" name="file" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button type="submit" class="btn btn-primary w-100" title="Upload"><i class="bi bi-cloud-arrow-up"></i></button>
+                                    </div>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

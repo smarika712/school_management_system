@@ -1,0 +1,103 @@
+{% extends 'school/base.html' %}
+{% load static %}
+
+{% block title %}{{ teacher.full_name }} - Greenwood Academy{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'teacher_list' %}">Teachers</a></li>
+                <li class="breadcrumb-item active">{{ teacher.full_name }}</li>
+            </ol>
+        </nav>
+        <div class="d-flex align-items-center gap-3">
+            {% if teacher.profile_photo %}
+            <img src="{{ teacher.profile_photo.url }}" alt="{{ teacher.full_name }}" class="rounded-circle border border-2 border-light" width="56" height="56" style="object-fit:cover">
+            {% else %}
+            <div class="student-avatar-placeholder" style="width:56px;height:56px;font-size:1.2rem">{{ teacher.first_name|first }}{{ teacher.last_name|first }}</div>
+            {% endif %}
+            <div>
+                <h1 class="page-title mb-0">{{ teacher.full_name }}</h1>
+                <p class="page-subtitle">{{ teacher.get_department_display }} Department</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary mb-3"><i class="bi bi-person-vcard me-2"></i>Profile</h5>
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-3">
+                                <small class="text-muted d-block">Teacher ID</small>
+                                <span><i class="bi bi-hash me-2 text-primary"></i>{{ teacher.teacher_id }}</span>
+                            </li>
+                            <li class="mb-3">
+                                <small class="text-muted d-block">Email</small>
+                                <span><i class="bi bi-envelope me-2 text-primary"></i>{{ teacher.email }}</span>
+                            </li>
+                            <li class="mb-3">
+                                <small class="text-muted d-block">Phone</small>
+                                <span><i class="bi bi-telephone me-2 text-primary"></i>{{ teacher.phone|default:"—" }}</span>
+                            </li>
+                            <li class="mb-3">
+                                <small class="text-muted d-block">Qualification</small>
+                                <span><i class="bi bi-patch-check me-2 text-primary"></i>{{ teacher.qualification }}</span>
+                            </li>
+                            <li class="mb-3">
+                                <small class="text-muted d-block">Date of Birth</small>
+                                <span><i class="bi bi-calendar me-2 text-primary"></i>{{ teacher.date_of_birth|date:"M d, Y" }}</span>
+                            </li>
+                            <li>
+                                <small class="text-muted d-block">Hired</small>
+                                <span><i class="bi bi-briefcase me-2 text-primary"></i>{{ teacher.hire_date|date:"M d, Y" }}</span>
+                            </li>
+                        </ul>
+                        {% if teacher.bio %}
+                        <hr>
+                        <small class="text-muted d-block mb-1">About</small>
+                        <p class="mb-0">{{ teacher.bio }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 text-primary"><i class="bi bi-journal-bookmark me-2"></i>Courses Taught</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if courses %}
+                        <div class="table-responsive">
+                            <table class="table align-middle">
+                                <thead><tr><th>Code</th><th>Course</th><th>Credits</th><th>Students</th></tr></thead>
+                                <tbody>
+                                    {% for course in courses %}
+                                    <tr>
+                                        <td class="text-primary fw-semibold">{{ course.code }}</td>
+                                        <td><a href="{% url 'course_detail' course.pk %}" class="text-decoration-none">{{ course.name }}</a></td>
+                                        <td>{{ course.credits }}</td>
+                                        <td>{{ course.students.count }}/{{ course.max_students }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="text-muted mb-0">This teacher is not assigned to any courses yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

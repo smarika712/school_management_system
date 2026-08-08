@@ -1,0 +1,99 @@
+{% extends 'school/base.html' %}
+{% load static %}
+
+{% block title %}{{ course.name }} - Greenwood Academy{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'course_list' %}">Courses</a></li>
+                <li class="breadcrumb-item active">{{ course.code }}</li>
+            </ol>
+        </nav>
+        <h1 class="page-title">{{ course.name }}</h1>
+        <p class="page-subtitle">{{ course.code }} &middot; {{ course.credits }} credits</p>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0">
+                    {% if course.thumbnail %}
+                    <img src="{{ course.thumbnail.url }}" alt="{{ course.name }}" class="card-img-top" style="height:220px;object-fit:cover">
+                    {% else %}
+                    <div class="card-img-top d-flex align-items-center justify-content-center bg-primary bg-gradient" style="height:220px">
+                        <i class="bi bi-book-half text-white" style="font-size:4rem"></i>
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-3">
+                                <small class="text-muted d-block">Instructor</small>
+                                {% if course.teacher %}
+                                <a href="{% url 'teacher_detail' course.teacher.pk %}" class="text-decoration-none"><i class="bi bi-person-workspace me-2 text-primary"></i>{{ course.teacher.full_name }}</a>
+                                {% else %}
+                                <span><i class="bi bi-person-workspace me-2 text-primary"></i>To be assigned</span>
+                                {% endif %}
+                            </li>
+                            <li class="mb-3">
+                                <small class="text-muted d-block">Capacity</small>
+                                <span><i class="bi bi-people me-2 text-primary"></i>{{ course.students.count }}/{{ course.max_students }} students</span>
+                            </li>
+                            <li class="mb-3">
+                                <small class="text-muted d-block">Credits</small>
+                                <span><i class="bi bi-star me-2 text-primary"></i>{{ course.credits }}</span>
+                            </li>
+                            <li>
+                                <small class="text-muted d-block">Status</small>
+                                <span class="badge {% if course.is_active %}bg-success{% else %}bg-secondary{% endif %}">{% if course.is_active %}Active{% else %}Inactive{% endif %}</span>
+                            </li>
+                        </ul>
+                        {% if course.description %}
+                        <hr>
+                        <h6 class="text-primary"><i class="bi bi-info-circle me-1"></i>About This Course</h6>
+                        <p class="text-muted mb-0">{{ course.description }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 text-primary"><i class="bi bi-trophy me-2"></i>Grade Distribution</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if grades %}
+                        <div class="table-responsive">
+                            <table class="table align-middle">
+                                <thead><tr><th>Student</th><th>Grade</th><th>Marks</th><th>Remarks</th></tr></thead>
+                                <tbody>
+                                    {% for grade in grades %}
+                                    <tr>
+                                        <td>
+                                            <a href="{% url 'student_detail' grade.student.pk %}" class="text-decoration-none">{{ grade.student.full_name }}</a>
+                                            <small class="text-muted d-block">{{ grade.student.student_id }}</small>
+                                        </td>
+                                        <td><span class="badge {% if grade.grade == 'F' %}bg-danger{% elif grade.grade <= 'C' %}bg-warning text-dark{% else %}bg-success{% endif %}">{{ grade.grade }}</span></td>
+                                        <td>{{ grade.marks|default:"—" }}</td>
+                                        <td>{{ grade.remarks|default:"—"|truncatewords:15 }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="text-muted mb-0">No grades have been recorded for this course.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

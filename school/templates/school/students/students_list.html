@@ -1,0 +1,106 @@
+{% extends 'school/base.html' %}
+{% load static %}
+
+{% block title %}Students - Greenwood Academy{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item active">Students</li>
+            </ol>
+        </nav>
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="page-title">Student Directory</h1>
+                <p class="page-subtitle">Managing {{ students.paginator.count }} students</p>
+            </div>
+            {% if user.is_superuser or user.profile.role == 'admin' %}
+            <a href="{% url 'student_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Add Student</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<section class="section-padding">
+    <div class="container">
+        <div class="filter-bar mb-4">
+            <form method="GET" class="row g-3 align-items-end">
+                <div class="col-md-5">
+                    <label class="form-label">Search</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" name="search" class="form-control" placeholder="Name, ID, or email..." value="{{ search }}">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        <option value="">All Status</option>
+                        {% for value, label in status_choices %}
+                        <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2"><button type="submit" class="btn btn-primary w-100">Filter</button></div>
+                <div class="col-md-2"><a href="{% url 'student_list' %}" class="btn btn-outline-secondary w-100">Clear</a></div>
+            </form>
+        </div>
+
+        <div class="row g-4">
+            {% for student in students %}
+            <div class="col-md-6 col-lg-4">
+                <div class="student-card">
+                    <div class="student-card-header">
+                        {% if student.profile_photo %}
+                        <img src="{{ student.profile_photo.url }}" alt="{{ student.full_name }}" class="student-avatar">
+                        {% else %}
+                        <div class="student-avatar-placeholder">{{ student.first_name|first }}{{ student.last_name|first }}</div>
+                        {% endif %}
+                        <span class="status-badge status-{{ student.status }}">{{ student.get_status_display }}</span>
+                    </div>
+                    <div class="student-card-body">
+                        <h5 class="student-name">{{ student.full_name }}</h5>
+                        <p class="student-id"><i class="bi bi-hash"></i> {{ student.student_id }}</p>
+                        <p class="student-meta"><i class="bi bi-envelope"></i> {{ student.email }}</p>
+                        <p class="student-meta"><i class="bi bi-calendar"></i> Enrolled {{ student.enrollment_date|date:"M d, Y" }}</p>
+                    </div>
+                    <div class="student-card-footer">
+                        <a href="{% url 'student_detail' student.pk %}" class="btn btn-sm btn-primary"><i class="bi bi-eye me-1"></i> View</a>
+                        {% if user.is_superuser or user.profile.role == 'admin' %}
+                        <a href="{% url 'student_update' student.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="empty-state">
+                    <i class="bi bi-people"></i>
+                    <h4>No Students Found</h4>
+                    <p>{% if search %}Try adjusting your search.{% else %}No students enrolled yet.{% endif %}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if students.has_other_pages %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if students.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ students.previous_page_number }}{% if search %}&search={{ search }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}"><i class="bi bi-chevron-left"></i></a></li>
+                {% endif %}
+                {% for num in students.paginator.page_range %}
+                <li class="page-item {% if students.number == num %}active{% endif %}"><a class="page-link" href="?page={{ num }}{% if search %}&search={{ search }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}">{{ num }}</a></li>
+                {% endfor %}
+                {% if students.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ students.next_page_number }}{% if search %}&search={{ search }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}"><i class="bi bi-chevron-right"></i></a></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
