@@ -38,7 +38,7 @@ class Student(models.Model):
     
     @property
     def full_name(self):
-        return f'{self.first_name}{self.last_name}'
+        return f'{self.first_name} {self.last_name}'
     
 class Teacher(models.Model):
     DEPARTMENT_CHOICES =[
@@ -63,7 +63,7 @@ class Teacher(models.Model):
     bio= models.TextField(blank= True)
     is_active= models.BooleanField(default= True)
     created_at= models.DateField(auto_now_add=True)
-    updated_at= models.DateField(auto_now_add=True)
+    updated_at= models.DateField(auto_now=True)
     
     
     class Meta:
@@ -97,7 +97,7 @@ class Course(models.Model):
         ordering = ['code']
         
     def __str__(self):
-        return f'{self.code}{self.code}'
+        return f'{self.code} - {self.name}'
    
     def get_absolute_url(self):
         return reverse('course_detail', kwargs={'pk': self.pk})

@@ -43,7 +43,7 @@ class TeacherAdmin(admin.ModelAdmin):
     list_filter=('department','is_active','hire_date')
     search_fields=('first_name','last_name','teacher_id')
     list_editable=('is_active',)
-    readonly_fields=('hire_date','created_at','updated_at')
+    readonly_fields=('created_at','updated_at')
     fieldsets=(('Personal Info',{'fields':('user','first_name','last_name','email',
             'phone','date_of_birth','profile_photo')}),
         ('Professional Info',{'fields':('teacher_id','department','qualification','hire_date','bio')}),

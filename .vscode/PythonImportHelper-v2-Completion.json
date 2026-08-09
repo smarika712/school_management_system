@@ -1164,7 +1164,7 @@
         "kind": 2,
         "importPath": "cms.views",
         "description": "cms.views",
-        "peekOfCode": "def gallery_view(request):\n    categories=GalleryImage.objectss.prefetch_related('images').all()\n    selected_category=request.GET.get('category')\n    images=GalleryImage.objects.select_related('category','uploaded_by').all()\n    paginator = Paginator(images, 12)\n    page=request.GET.get('page')\n    images= paginator.get_page(page)\n    return render(request,'cms/gallery.html',{\n        'categories':categories,'images':images,'selected_category':selected_category    \n        })",
+        "peekOfCode": "def gallery_view(request):\n    categories=GalleryImage.objects.prefetch_related('images').all()\n    selected_category=request.GET.get('category')\n    images=GalleryImage.objects.select_related('category','uploaded_by').all()\n    paginator = Paginator(images, 12)\n    page=request.GET.get('page')\n    images= paginator.get_page(page)\n    return render(request,'cms/gallery.html',{\n        'categories':categories,'images':images,'selected_category':selected_category    \n        })",
         "detail": "cms.views",
         "documentation": {}
     },
@@ -1209,7 +1209,7 @@
         "kind": 5,
         "importPath": "config.settings",
         "description": "config.settings",
-        "peekOfCode": "BASE_DIR = Path(__file__).resolve().parent.parent\nSECRET_KEY = config('SECRET_KEY')\nDEBUG = config('DEBUG',default = False, cast = bool)\nDEBUG = True\nALLOWED_HOSTS = config('ALLOWED_HOST', default='127.0.0.1,localhost', cast=Csv())\nINSTALLED_APPS = [\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',\n    'django.contrib.sessions',",
+        "peekOfCode": "BASE_DIR = Path(__file__).resolve().parent.parent\nSECRET_KEY = config(\"SECRET_KEY\")\nDEBUG = config(\"DEBUG\", default=True, cast=bool)\nALLOWED_HOSTS = config(\n    \"ALLOWED_HOSTS\",\n    default=\"127.0.0.1,localhost\",\n    cast=Csv()\n)\nINSTALLED_APPS = [\n    'django.contrib.admin',",
         "detail": "config.settings",
         "documentation": {}
     },
@@ -1218,7 +1218,7 @@
         "kind": 5,
         "importPath": "config.settings",
         "description": "config.settings",
-        "peekOfCode": "SECRET_KEY = config('SECRET_KEY')\nDEBUG = config('DEBUG',default = False, cast = bool)\nDEBUG = True\nALLOWED_HOSTS = config('ALLOWED_HOST', default='127.0.0.1,localhost', cast=Csv())\nINSTALLED_APPS = [\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',\n    'django.contrib.sessions',\n    'django.contrib.messages',",
+        "peekOfCode": "SECRET_KEY = config(\"SECRET_KEY\")\nDEBUG = config(\"DEBUG\", default=True, cast=bool)\nALLOWED_HOSTS = config(\n    \"ALLOWED_HOSTS\",\n    default=\"127.0.0.1,localhost\",\n    cast=Csv()\n)\nINSTALLED_APPS = [\n    'django.contrib.admin',\n    'django.contrib.auth',",
         "detail": "config.settings",
         "documentation": {}
     },
@@ -1227,16 +1227,7 @@
         "kind": 5,
         "importPath": "config.settings",
         "description": "config.settings",
-        "peekOfCode": "DEBUG = config('DEBUG',default = False, cast = bool)\nDEBUG = True\nALLOWED_HOSTS = config('ALLOWED_HOST', default='127.0.0.1,localhost', cast=Csv())\nINSTALLED_APPS = [\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',\n    'django.contrib.sessions',\n    'django.contrib.messages',\n    'django.contrib.staticfiles',",
-        "detail": "config.settings",
-        "documentation": {}
-    },
-    {
-        "label": "DEBUG",
-        "kind": 5,
-        "importPath": "config.settings",
-        "description": "config.settings",
-        "peekOfCode": "DEBUG = True\nALLOWED_HOSTS = config('ALLOWED_HOST', default='127.0.0.1,localhost', cast=Csv())\nINSTALLED_APPS = [\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',\n    'django.contrib.sessions',\n    'django.contrib.messages',\n    'django.contrib.staticfiles',\n    'rest_framework',",
+        "peekOfCode": "DEBUG = config(\"DEBUG\", default=True, cast=bool)\nALLOWED_HOSTS = config(\n    \"ALLOWED_HOSTS\",\n    default=\"127.0.0.1,localhost\",\n    cast=Csv()\n)\nINSTALLED_APPS = [\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',",
         "detail": "config.settings",
         "documentation": {}
     },
@@ -1245,7 +1236,7 @@
         "kind": 5,
         "importPath": "config.settings",
         "description": "config.settings",
-        "peekOfCode": "ALLOWED_HOSTS = config('ALLOWED_HOST', default='127.0.0.1,localhost', cast=Csv())\nINSTALLED_APPS = [\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',\n    'django.contrib.sessions',\n    'django.contrib.messages',\n    'django.contrib.staticfiles',\n    'rest_framework',\n    'rest_framework_simplejwt',",
+        "peekOfCode": "ALLOWED_HOSTS = config(\n    \"ALLOWED_HOSTS\",\n    default=\"127.0.0.1,localhost\",\n    cast=Csv()\n)\nINSTALLED_APPS = [\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',\n    'django.contrib.sessions',",
         "detail": "config.settings",
         "documentation": {}
     },
@@ -1317,7 +1308,7 @@
         "kind": 5,
         "importPath": "config.settings",
         "description": "config.settings",
-        "peekOfCode": "LANGUAGE_CODE = 'en-us'\nTIME_ZONE = 'UTC'\nUSE_I18N = True\nUSE_TZ = True\nSTATIC_URL = 'static/'\nSTATICFILE_DIRS  = [BASE_DIR/'static']\nIMAGE_MAX_WIGTH=1920\nIMAGE_MAX_HEIGHT=1080\nIMAGE_QUALITY=85\nTHUMBNAIL_SIZE=300",
+        "peekOfCode": "LANGUAGE_CODE = 'en-us'\nTIME_ZONE = 'UTC'\nUSE_I18N = True\nUSE_TZ = True\nSTATIC_URL = 'static/'\nSTATICFILES_DIRS = [BASE_DIR / 'static']\nDEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'\nFRONTEND_URL = config('FRONTEND_URL', default='http://127.0.0.1:8000')\nIMAGE_MAX_WIDTH= 1920\nIMAGE_MAX_HEIGHT=1080",
         "detail": "config.settings",
         "documentation": {}
     },
@@ -1326,7 +1317,7 @@
         "kind": 5,
         "importPath": "config.settings",
         "description": "config.settings",
-        "peekOfCode": "TIME_ZONE = 'UTC'\nUSE_I18N = True\nUSE_TZ = True\nSTATIC_URL = 'static/'\nSTATICFILE_DIRS  = [BASE_DIR/'static']\nIMAGE_MAX_WIGTH=1920\nIMAGE_MAX_HEIGHT=1080\nIMAGE_QUALITY=85\nTHUMBNAIL_SIZE=300",
+        "peekOfCode": "TIME_ZONE = 'UTC'\nUSE_I18N = True\nUSE_TZ = True\nSTATIC_URL = 'static/'\nSTATICFILES_DIRS = [BASE_DIR / 'static']\nDEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'\nFRONTEND_URL = config('FRONTEND_URL', default='http://127.0.0.1:8000')\nIMAGE_MAX_WIDTH= 1920\nIMAGE_MAX_HEIGHT=1080\nIMAGE_QUALITY= 85",
         "detail": "config.settings",
         "documentation": {}
     },
@@ -1335,7 +1326,7 @@
         "kind": 5,
         "importPath": "config.settings",
         "description": "config.settings",
-        "peekOfCode": "USE_I18N = True\nUSE_TZ = True\nSTATIC_URL = 'static/'\nSTATICFILE_DIRS  = [BASE_DIR/'static']\nIMAGE_MAX_WIGTH=1920\nIMAGE_MAX_HEIGHT=1080\nIMAGE_QUALITY=85\nTHUMBNAIL_SIZE=300",
+        "peekOfCode": "USE_I18N = True\nUSE_TZ = True\nSTATIC_URL = 'static/'\nSTATICFILES_DIRS = [BASE_DIR / 'static']\nDEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'\nFRONTEND_URL = config('FRONTEND_URL', default='http://127.0.0.1:8000')\nIMAGE_MAX_WIDTH= 1920\nIMAGE_MAX_HEIGHT=1080\nIMAGE_QUALITY= 85\nTHUMBNAIL_SIZE=300",
         "detail": "config.settings",
         "documentation": {}
     },
@@ -1344,7 +1335,7 @@
         "kind": 5,
         "importPath": "config.settings",
         "description": "config.settings",
-        "peekOfCode": "USE_TZ = True\nSTATIC_URL = 'static/'\nSTATICFILE_DIRS  = [BASE_DIR/'static']\nIMAGE_MAX_WIGTH=1920\nIMAGE_MAX_HEIGHT=1080\nIMAGE_QUALITY=85\nTHUMBNAIL_SIZE=300",
+        "peekOfCode": "USE_TZ = True\nSTATIC_URL = 'static/'\nSTATICFILES_DIRS = [BASE_DIR / 'static']\nDEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'\nFRONTEND_URL = config('FRONTEND_URL', default='http://127.0.0.1:8000')\nIMAGE_MAX_WIDTH= 1920\nIMAGE_MAX_HEIGHT=1080\nIMAGE_QUALITY= 85\nTHUMBNAIL_SIZE=300",
         "detail": "config.settings",
         "documentation": {}
     },
@@ -1353,7 +1344,34 @@
         "kind": 5,
         "importPath": "config.settings",
         "description": "config.settings",
-        "peekOfCode": "STATIC_URL = 'static/'\nSTATICFILE_DIRS  = [BASE_DIR/'static']\nIMAGE_MAX_WIGTH=1920\nIMAGE_MAX_HEIGHT=1080\nIMAGE_QUALITY=85\nTHUMBNAIL_SIZE=300",
+        "peekOfCode": "STATIC_URL = 'static/'\nSTATICFILES_DIRS = [BASE_DIR / 'static']\nDEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'\nFRONTEND_URL = config('FRONTEND_URL', default='http://127.0.0.1:8000')\nIMAGE_MAX_WIDTH= 1920\nIMAGE_MAX_HEIGHT=1080\nIMAGE_QUALITY= 85\nTHUMBNAIL_SIZE=300",
+        "detail": "config.settings",
+        "documentation": {}
+    },
+    {
+        "label": "STATICFILES_DIRS",
+        "kind": 5,
+        "importPath": "config.settings",
+        "description": "config.settings",
+        "peekOfCode": "STATICFILES_DIRS = [BASE_DIR / 'static']\nDEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'\nFRONTEND_URL = config('FRONTEND_URL', default='http://127.0.0.1:8000')\nIMAGE_MAX_WIDTH= 1920\nIMAGE_MAX_HEIGHT=1080\nIMAGE_QUALITY= 85\nTHUMBNAIL_SIZE=300",
+        "detail": "config.settings",
+        "documentation": {}
+    },
+    {
+        "label": "DEFAULT_AUTO_FIELD",
+        "kind": 5,
+        "importPath": "config.settings",
+        "description": "config.settings",
+        "peekOfCode": "DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'\nFRONTEND_URL = config('FRONTEND_URL', default='http://127.0.0.1:8000')\nIMAGE_MAX_WIDTH= 1920\nIMAGE_MAX_HEIGHT=1080\nIMAGE_QUALITY= 85\nTHUMBNAIL_SIZE=300",
+        "detail": "config.settings",
+        "documentation": {}
+    },
+    {
+        "label": "FRONTEND_URL",
+        "kind": 5,
+        "importPath": "config.settings",
+        "description": "config.settings",
+        "peekOfCode": "FRONTEND_URL = config('FRONTEND_URL', default='http://127.0.0.1:8000')\nIMAGE_MAX_WIDTH= 1920\nIMAGE_MAX_HEIGHT=1080\nIMAGE_QUALITY= 85\nTHUMBNAIL_SIZE=300",
         "detail": "config.settings",
         "documentation": {}
     },
@@ -1407,7 +1425,7 @@
         "kind": 6,
         "importPath": "school.admin",
         "description": "school.admin",
-        "peekOfCode": "class TeacherAdmin(admin.ModelAdmin):\n    list_display=('teacher_id','full_name_display','department','qualification','is_active')\n    list_filter=('department','is_active','hire_date')\n    search_fields=('first_name','last_name','teacher_id')\n    list_editable=('is_active',)\n    readonly_fields=('hire_date','created_at','updated_at')\n    fieldsets=(('Personal Info',{'fields':('user','first_name','last_name','email',\n            'phone','date_of_birth','profile_photo')}),\n        ('Professional Info',{'fields':('teacher_id','department','qualification','hire_date','bio')}),\n        ('Status',{'fields':('is_active',)}),",
+        "peekOfCode": "class TeacherAdmin(admin.ModelAdmin):\n    list_display=('teacher_id','full_name_display','department','qualification','is_active')\n    list_filter=('department','is_active','hire_date')\n    search_fields=('first_name','last_name','teacher_id')\n    list_editable=('is_active',)\n    readonly_fields=('created_at','updated_at')\n    fieldsets=(('Personal Info',{'fields':('user','first_name','last_name','email',\n            'phone','date_of_birth','profile_photo')}),\n        ('Professional Info',{'fields':('teacher_id','department','qualification','hire_date','bio')}),\n        ('Status',{'fields':('is_active',)}),",
         "detail": "school.admin",
         "documentation": {}
     },
@@ -1587,7 +1605,7 @@
         "kind": 2,
         "importPath": "school.views",
         "description": "school.views",
-        "peekOfCode": "def home_view(request):\n    from cms.models import Banner,GalleryCategory,GalleryImage,Event,Announcement,Testimonials\n    context={\n        'banners':Banner.objects.filter(is_active=True)[:5],\n        'featured_images':GalleryCategory.objects.filter(is_featured=True)[:8],\n        'upcoming_events':Event.objects.filter(is_published=True)[:4],\n        'announcements':Announcement.objects.filter(is_published=True)[:4],\n        'testimonials':Testimonials.objects.filter(is_published=True)[:6],\n        'total_students':Student.objects.filter(status='active').count(),\n        'total_teachers':Teacher.objects.filter(status='active').count(),",
+        "peekOfCode": "def home_view(request):\n    from cms.models import Banner,GalleryCategory,GalleryImage,Event,Announcement,Testimonials\n    context={\n        'banners':Banner.objects.filter(is_active=True)[:5],\n        'featured_images':GalleryCategory.objects.filter(is_featured=True)[:8],\n        'upcoming_events':Event.objects.filter(is_published=True)[:4],\n        'announcements':Announcement.objects.filter(is_published=True)[:4],\n        'testimonials': Testimonials.objects.filter(is_active=True)[:6],\n        'total_students':Student.objects.filter(status='active').count(),\n        'total_teachers': Teacher.objects.filter(is_active=True).count(),",
         "detail": "school.views",
         "documentation": {}
     },
